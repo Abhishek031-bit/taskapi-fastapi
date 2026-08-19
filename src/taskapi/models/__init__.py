@@ -2,7 +2,7 @@ from taskapi.core.db import Base
 from taskapi.models.comment import Comment
 from taskapi.models.organizations import Membership, MembershipRole, Organization
 from taskapi.models.project import Project
-from taskapi.models.task import Task
+from taskapi.models.task import Task, TaskStatus
 from taskapi.models.user import User
 
 __all__ = [
@@ -13,5 +13,6 @@ __all__ = [
     "Organization",
     "Project",
     "Task",
+    "TaskStatus",
     "User",
 ]
