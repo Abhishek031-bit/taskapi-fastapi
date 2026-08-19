@@ -21,3 +21,8 @@ async def list_projects(db: AsyncSession, organization_id: UUID) -> list[Project
         select(Project).where(Project.organization_id == organization_id)
     )
     return list(result.scalars().all())
+
+
+async def get_project(db: AsyncSession, project_id: UUID) -> Project | None:
+    result = await db.execute(select(Project).where(Project.id == project_id))
+    return result.scalar_one_or_none()

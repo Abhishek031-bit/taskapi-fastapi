@@ -1,9 +1,9 @@
 from uuid import UUID
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
-from taskapi.core.deps import DbSession
-from taskapi.models import TaskStatus
+from taskapi.core.deps import DbSession, require_role
+from taskapi.models import Membership, MembershipRole, TaskStatus
 from taskapi.schemas.task import TaskCreate, TaskDetailRead, TaskRead, TaskUpdate
 from taskapi.services import task as task_service
 
@@ -19,9 +19,13 @@ async def create_task(
     project_id: UUID,
     data: TaskCreate,
     db: DbSession,
+    membership: Membership = Depends(
+        require_role(MembershipRole.OWNER, MembershipRole.ADMIN, MembershipRole.MEMBER)
+    ),
 ):
     return await task_service.create_task(
         db,
+        organization_id=organization_id,
         project_id=project_id,
         title=data.title,
         description=data.description,
@@ -37,6 +41,9 @@ async def list_tasks(
     db: DbSession,
     status_filter: TaskStatus | None = None,
     assignee_id: UUID | None = None,
+    membership: Membership = Depends(
+        require_role(MembershipRole.OWNER, MembershipRole.ADMIN, MembershipRole.MEMBER)
+    ),
 ):
     return await task_service.list_tasks(
         db, project_id=project_id, status_filter=status_filter, assignee_id=assignee_id
@@ -50,6 +57,9 @@ async def get_task_detail(
     task_id: UUID,
     db: DbSession,
     strategy: str = "selectinload",
+    membership: Membership = Depends(
+        require_role(MembershipRole.OWNER, MembershipRole.ADMIN, MembershipRole.MEMBER)
+    ),
 ):
     return await task_service.get_task_detail(db, task_id, strategy=strategy)
 
@@ -61,6 +71,9 @@ async def update_task(
     task_id: UUID,
     data: TaskUpdate,
     db: DbSession,
+    membership: Membership = Depends(
+        require_role(MembershipRole.OWNER, MembershipRole.ADMIN, MembershipRole.MEMBER)
+    ),
 ):
     return await task_service.update_task(
         db,
