@@ -11,6 +11,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from taskapi.core.db import Base
 
 if TYPE_CHECKING:
+    from taskapi.models.comment import Comment
     from taskapi.models.project import Project
     from taskapi.models.user import User
 
@@ -42,3 +43,4 @@ class Task(Base):
         back_populates="subtasks", remote_side=[id]
     )
     subtasks: Mapped[list[Task]] = relationship(back_populates="parent")
+    comments: Mapped[list[Comment]] = relationship(back_populates="task")
