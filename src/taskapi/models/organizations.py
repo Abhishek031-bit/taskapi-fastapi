@@ -9,6 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from taskapi.core.db import Base
 
 if TYPE_CHECKING:
+    from taskapi.models.project import Project
     from taskapi.models.user import User
 
 
@@ -25,6 +26,7 @@ class Organization(Base):
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
 
     memberships: Mapped[list[Membership]] = relationship(back_populates="organization")
+    projects: Mapped[list[Project]] = relationship(back_populates="organization")
 
 
 class Membership(Base):
